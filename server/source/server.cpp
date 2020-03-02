@@ -11,7 +11,8 @@ Server::Server(std::unique_ptr<ServerSocket> socket, const std::string& path) :
     m_type{SOCK_STREAM},
     m_address{},
     m_isSevrerStarted{false},
-    m_activeConnections{}
+    m_activeConnections{},
+    m_sQueue{}
 {
     ::unlink(m_address.sun_path);
     m_address.sun_family = AF_UNIX;
@@ -20,7 +21,6 @@ Server::Server(std::unique_ptr<ServerSocket> socket, const std::string& path) :
      std::cout << "server constructor" << std::endl;
 
     createServer();
-    start();
 }
 
 void Server::createServer()
@@ -146,7 +146,7 @@ void Server::read()
 void Server::readFromSocket(std::shared_ptr<Client> connClient)
 {
     bool emptyMes = false;
-    auto recv = connClient->recvMessage(emptyMes);
+    std::string recv = connClient->recvMessage(emptyMes);
     
     if (connClient->getRecvBytes() == 0)
     {
@@ -168,13 +168,8 @@ void Server::readFromSocket(std::shared_ptr<Client> connClient)
     }
     else
     {
-        std::cout << "=========================\n" << connClient->getRecvBytes() << "\n";
-        std::cout << "Recevied message: " << recv.ByteSizeLong() << "\n";
-        recv = {};
-        connClient->setRecvBytes(0);
-        std::cout << "=========================\n";
+        m_sQueue.push(recv);
     }
-    
 }
 
 Server::~Server()
@@ -197,4 +192,9 @@ void Server::stop()
         m_serverThread.join();
     if (m_serverThread1.joinable())
         m_serverThread1.join();
+}
+
+std::string Server::getQueue()
+{
+    return m_sQueue.pop();
 }

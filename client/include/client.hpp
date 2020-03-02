@@ -15,7 +15,7 @@ public:
     void connectToServer();
 
     template < typename T >
-    void sendMessage(const T&)
+    void sendMessage(const T& message)
     {
         size_t size = message.ByteSizeLong();
         uint8_t* data = new uint8_t[size];
@@ -25,7 +25,7 @@ public:
         }
     }
 
-    char recvMessage(const bool&);
+    std::string recvMessage(bool&);
 
     int getSocketfd();
     ssize_t getRecvBytes();

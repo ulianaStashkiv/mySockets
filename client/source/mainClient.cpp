@@ -1,11 +1,13 @@
 #include "client.hpp"
 
+#include <any.pb.h>
 #include <application_state_management.pb.h>
 
 #include <thread>
 #include <chrono>
 
 using namespace ApplicationStateManagement;
+
 
 int main(int argc, char const *argv[])
 {
@@ -19,13 +21,14 @@ int main(int argc, char const *argv[])
     comp.set_appname(message);
     comp.set_state(enums::ApplicationState::kInitializing);
 
+    google::protobuf::Any any;
+    any.PackFrom(comp);
+
     Client myClient {std::move(clientPtr), path};
 
+    std::cout<< "client connect to sertver\n";
     myClient.connectToServer();
-    myClient.sendMessage(comp);
-
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-
-    myClient.sendMessage(comp);
+    std::cout<< "client send to sertver\n";
+    myClient.sendMessage(any);
     return 0;
 }
