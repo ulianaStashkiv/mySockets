@@ -4,6 +4,7 @@
 #include <server_socket.hpp>
 #include <i_server.hpp>
 #include <client.hpp>
+#include <safty_queue.hpp>
 
 #include <atomic>
 #include <mutex>
@@ -25,6 +26,8 @@ public:
     void running();
     void read();
 
+    std::string getQueue();
+
     ~Server() override;
 
 private:
@@ -43,6 +46,8 @@ private:
     std::atomic_bool m_isSevrerStarted;
     
     std::vector<std::shared_ptr<Client>> m_activeConnections;
+
+    SaftyQueue m_sQueue;
     
     std::thread m_serverThread;
     std::thread m_serverThread1;

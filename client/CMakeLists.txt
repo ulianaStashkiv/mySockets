@@ -22,12 +22,6 @@ target_link_libraries(client
 
 )
 
-
-message("==============================================")
-message(${CMAKE_CURRENT_SOURCE_DIR}/../build/gen)
-message("==============================================")
-
-
 # Specify include directory
 target_include_directories(client
     PUBLIC

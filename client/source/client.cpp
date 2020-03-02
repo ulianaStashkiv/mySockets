@@ -7,7 +7,8 @@ Client::Client(std::unique_ptr<ClientSocket> socket, const std::string& path) :
     m_servAddr{}
 {
     m_servAddr.sun_family = AF_UNIX;
-    path.copy(m_servAddr.sun_path, path.length());}
+    path.copy(m_servAddr.sun_path, path.length());
+}
 
 void Client::createSocket(int domain, int type, int protocol)
 {
@@ -37,7 +38,7 @@ void Client::connectToServer()
     std::cout << "Connected" << std::endl;
 }
 
-char Client::recvMessage(const bool& empty)
+std::string Client::recvMessage(bool& empty)
 {
     const int buffSize = 1000;
     char buff[buffSize];
