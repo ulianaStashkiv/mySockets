@@ -18,7 +18,7 @@ public:
     void sendMessage(const T& message)
     {
         size_t size = message.ByteSizeLong();
-        uint8_t* data = new uint8_t[size];
+        uint8_t* data = new uint8_t[size]; // unique_ptr or delete[]
         if(message.SerializeToArray(data, size))
         {
             m_socket->send(m_socketfd, data, size, 0);

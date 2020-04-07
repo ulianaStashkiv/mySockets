@@ -81,13 +81,24 @@ void Server::start()
 
 }
 
+void Server::send(google::protobuf::Any any)
+{
+    while (m_isSevrerStarted)
+    {
+        for (auto it : m_activeConnections)
+        {
+            it->sendMessage(any);
+        }
+    }
+}
+
 void Server::running()
 {
     std::cout << "running\n";
+    m_activeConnections.reserve(16);
+    
     while (m_isSevrerStarted)
     {
-        m_activeConnections.reserve(16);
-        
         const std::string path{"/tmp/state_setter"};
 
         int a = acceptConnection();
@@ -117,14 +128,16 @@ int Server::acceptConnection()
     {
         perror("Error accept connection");
         m_isSevrerStarted = false;
-        return connfd;
+        return -1;
     }
 
-    if (fcntl(connfd, F_SETFL, O_NONBLOCK) == -1)
+    auto a = fcntl(connfd, F_SETFL, O_NONBLOCK);
+
+    if (a == -1)
     {
         std::cout << "SocketServer: error on fcntl()" << std::endl;
         m_isSevrerStarted = false;
-        return connfd;
+        return -1;
     }
 
     return connfd;

@@ -6,6 +6,8 @@
 #include <client.hpp>
 #include <safty_queue.hpp>
 
+#include <any.pb.h>
+
 #include <atomic>
 #include <mutex>
 #include <poll.h>
@@ -25,6 +27,7 @@ public:
     void readFromSocket(std::shared_ptr<Client>);
     void running();
     void read();
+    void send(google::protobuf::Any any);
 
     std::string getQueue();
 

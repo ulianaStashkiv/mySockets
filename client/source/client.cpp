@@ -49,8 +49,6 @@ std::string Client::recvMessage(bool& empty)
     {
         empty = true;
     }
-    
-    //tmp.ParseFromArray(buff, buffSize);
 
     return buff;
 }
